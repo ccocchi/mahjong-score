@@ -9,7 +9,7 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Fou
 
   protected def isCompletedBy(hand: Hand): Boolean = {
     if (hand.chows.size >= chowsNumber) {
-      buildShiftedChows(hand.chows) match {
+      findShiftedChows(hand.chows) match {
         case None => false
         case Some(chows) =>
           chows.size == chowsNumber &&
@@ -20,7 +20,7 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Fou
       false
   }
 
-  private def buildShiftedChows(combinations: Seq[Chow]): Option[Seq[Chow]] = {
+  private def findShiftedChows(combinations: Seq[Chow]): Option[Seq[Chow]] = {
 
     def innerS(seq: Seq[Chow]) = inner(seq.head, seq.tail, Seq.empty)
 
@@ -45,8 +45,6 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Fou
   }
 }
 
-class FourShiftedChows  extends ShiftedChows(4, pure = true)  with Points32
-class PureShiftedChows  extends ShiftedChows(3, pure = true)  with Points16
 class MixedShiftedChows extends ShiftedChows(3, pure = false) with Points6
-
-
+class PureShiftedChows  extends ShiftedChows(3, pure = true)  with Points16
+class FourShiftedChows  extends ShiftedChows(4, pure = true)  with Points32

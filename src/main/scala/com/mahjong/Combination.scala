@@ -40,6 +40,7 @@ class Pair(val tiles: Seq[Tile]) extends Combination {
 abstract class PongLike extends Combination {
   val tilesNumber = 3
 
+  val getValue: Int = value.get
   override def isPongLike = true
 }
 

@@ -59,7 +59,7 @@ abstract class ScoringHand {
   protected def baseVerify(hand: Hand): Boolean = true
 }
 
-abstract class FourAndAPair extends ScoringHand {
+trait FourAndAPair extends ScoringHand {
   override def baseVerify(hand: Hand) = hand.combinations.size == 5 && hand.combinations.count(_.isPair) == 1
 }
 
