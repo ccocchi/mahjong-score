@@ -23,11 +23,18 @@ sealed abstract class Tile {
   def ==(other: Suited): Boolean = false
   def ==(other: Wind): Boolean   = false
   def ==(other: Dragon): Boolean = false
+
+  def isDragon: Boolean = false
+  def isWind: Boolean = false
 }
 
 abstract class Honor extends Tile {
   val honor = true
   val value = None
+}
+
+object Suited {
+  def apply(suit: Suit, value: Int) = new Suited(suit, value)
 }
 
 class Suited(val suit: Suit, val n: Int) extends Tile {
@@ -40,12 +47,29 @@ class Suited(val suit: Suit, val n: Int) extends Tile {
   override def ==(other: Suited) = this.suit == other.suit && this.n == other.n
 }
 
-class Wind(val direction: String) extends Honor {
+object Wind {
+  object Direction extends Enumeration {
+    type Direction = Value
+    val North, South, East, West = Value
+  }
+
+  def apply(direction: Direction.Direction) = new Wind(direction)
+}
+
+import Wind.Direction.Direction
+
+class Wind(val direction: Direction) extends Honor {
   override def ==(other: Wind) = this.direction == other.direction
+  override def isWind = true
+}
+
+object Dragon {
+  def apply(color: Color) = new Dragon(color)
 }
 
 class Dragon(val color: Color) extends Honor {
   override def ==(other: Dragon) = this.color == other.color
+  override def isDragon = true
 }
 
 
