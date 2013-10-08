@@ -45,6 +45,6 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Fou
   }
 }
 
-class MixedShiftedChows extends ShiftedChows(3, pure = false) with Points6
-class PureShiftedChows  extends ShiftedChows(3, pure = true)  with Points16
-class FourShiftedChows  extends ShiftedChows(4, pure = true)  with Points32
+class ThreeShiftedChows     extends ShiftedChows(3, pure = false) with Points6
+class ThreePureShiftedChows extends ShiftedChows(3, pure = true)  with Points16
+class FourPureShiftedChows  extends ShiftedChows(4, pure = true)  with Points32

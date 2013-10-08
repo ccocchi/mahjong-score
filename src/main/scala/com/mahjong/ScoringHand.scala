@@ -3,7 +3,7 @@ package com.mahjong
 import scala.annotation.tailrec
 import Tile.Suit._
 import Tile.Color._
-import Wind.Direction._
+import com.mahjong.hands._
 
 object Helpers {
   def isSequential[T <: Suited](tiles: Seq[T], interval: Int = 1): Boolean = isSequential(tiles.flatMap(_.value).sorted)
@@ -44,8 +44,98 @@ object Helpers {
 
 object ScoringHand {
   val allHands: Seq[ScoringHand] = Seq(
+    // 88
+    new BigFourWinds,
+    new BigThreeDragons,
+    new AllGreen,
+    new NineGates,
     new FourKongs,
-    new ThirteenOrphans
+    new SevenShiftedPair,
+    // new ThirteenOrphans
+
+    // 64
+    new AllTerminals,
+    new LittleFourWinds,
+    new LittleThreeDragons,
+    // new AllHonor,
+    new FourConcealedPungs,
+    // new TwoDragonInFamily
+
+    // 48
+    new QuadrupleChows,
+    new FourPureShiftedPungs,
+
+    // 32
+    new FourPureShiftedChows,
+    new ThreeKongs,
+    new AllTerminalAndHonor,
+
+    // 24
+    // new SevenPairs,
+    // new KnittedTiles,
+    // new AllEvenPungs,
+    // new PureHand,
+    new TriplePureChows,
+    new ThreePureShiftedPungs,
+    new LowerTiles,
+    new MiddleTiles,
+    new UpperTiles,
+
+    // 16
+    new PureBigStraight,
+    // new TwoDragonsInTwoFamily,
+    new ThreePureShiftedChows,
+    // new AllFive,
+    new TriplePung,
+    new ThreeConcealedPungs,
+
+    // 12
+    // new SmallKnittedTiles,
+    // new StraightKnittedTiles,
+    new LowerFour,
+    new UpperFour,
+    new BigThreeWinds,
+
+    // 8
+    new BigStraight,
+    // new Symetry,
+    new TripleChows,
+    new ThreeShiftedPungs,
+    // new ValueLessHand,
+
+
+    // 6
+    // new AllPung,
+    // new HalfPure,
+    new ThreeShiftedChows,
+    // new AllType,
+    // new AllConcealed,
+    new TwoDragonPungs,
+
+    // 4
+    // new HonorOrTerminalEverywhere,
+    new TwoKongs,
+
+    // 2
+    new DragonPung,
+    // new AllConcealed,
+    // new AllChow,
+    // new FourOfTheSame,
+    new DoublePung,
+    // new TwoConcealedPungs,
+    // new ConcealedKong,
+    // new AllSimples,
+
+    // 1
+    new PureDoubleChow,
+    new MixedDoubleChow,
+    new PureLittleStraight,
+    // new OneDragonInOneFamily
+    // new TerminalOrHonorPung,
+    // new ExposedKong,
+    // new MissingFamily,
+    // new NoHonor
+
   )
 }
 
@@ -59,14 +149,13 @@ abstract class ScoringHand {
   protected def baseVerify(hand: Hand): Boolean = true
 }
 
+trait GlobalCondition extends ScoringHand
+
 trait FourAndAPair extends ScoringHand {
   override def baseVerify(hand: Hand) = hand.combinations.size == 5 && hand.combinations.count(_.isPair) == 1
 }
 
-class FourKongs extends FourAndAPair {
-  val points = 88
-  protected def isCompletedBy(hand: Hand) = hand.combinations.count(_.isKong) == 4
-}
+trait SpecialHand extends ScoringHand
 
 class ThirteenOrphans extends ScoringHand {
   val points = 88
@@ -88,17 +177,15 @@ class SevenShiftedPair extends ScoringHand {
   }
 }
 
-class NineGates extends ScoringHand {
+class NineGates extends SpecialHand {
   val points = 88
-
-  import Helpers.isFlush
 
   def isCompletedBy(hand: Hand) = {
     val pongs = hand.combinations.filter(_.isPong)
     val pongsValues = pongs.flatMap(_.value).sorted
     val remainingTiles = hand.tiles.diff(pongs.flatMap(_.tiles)).flatMap(_.value).distinct.sorted
 
-    pongs.size == 2 && pongsValues == Seq(1, 9) && isFlush(hand) && remainingTiles.containsSlice(2 to 8)
+    pongs.size == 2 && pongsValues == Seq(1, 9) && remainingTiles.containsSlice(2 to 8) && hand.isFlush
   }
 }
 
@@ -117,62 +204,11 @@ class AllGreen extends FourAndAPair {
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(authorizedTiles contains)
 }
 
-class BigThreeDragons extends FourAndAPair {
-  val points = 88
-
-  private[this] val threeColors = Seq(Green, Red, White)
-
-  protected def isCompletedBy(hand: Hand) = threeColors.forall { c =>
-    val dragon = Dragon(c)
-    hand.tiles.count(_ == dragon) >= 3
-  }
-}
-
-class BigFoudWinds extends FourAndAPair {
-  val points = 88
-
-  private[this] val fourDirections = Seq(North, South, East, West)
-
-  protected def isCompletedBy(hand: Hand) = fourDirections.forall { d =>
-    val wind = Wind(d)
-    hand.tiles.count(_ == wind) >= 3
-  }
-}
 
 class FourHiddenPungs extends FourAndAPair {
   val points = 64
 
   protected def isCompletedBy(hand: Hand) = hand.combinations.count(c => c.isPong && c.isHidden) == 4
-}
-
-class LittleThreeDragons extends FourAndAPair {
-  val points = 64
-
-  protected def isCompletedBy(hand: Hand): Boolean = {
-    val dragons = hand.tiles.filter(_.isDragon)
-    if (dragons.size == 7) {
-      val tiles = dragons.asInstanceOf[Seq[Dragon]]
-      val dragonMap = tiles.groupBy(d => d.color).mapValues(_.size)
-
-      dragonMap.size == 3 && dragonMap.values.toList.sorted == Seq(1, 3, 3)
-    } else
-      false
-  }
-}
-
-class LittleFourWinds extends FourAndAPair {
-  val points = 64
-
-  protected def isCompletedBy(hand: Hand): Boolean = {
-    val winds = hand.tiles.filter(_.isWind)
-    if (winds.size == 10) {
-      val tiles = winds.asInstanceOf[Seq[Wind]]
-      val windMap = tiles.groupBy(w => w.direction).mapValues(_.size)
-
-      windMap.size == 4 && windMap.values.toList.sorted == Seq(1, 3, 3, 3)
-    } else
-      false
-  }
 }
 
 class AllTerminals extends FourAndAPair {
@@ -181,53 +217,10 @@ class AllTerminals extends FourAndAPair {
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(_.terminal)
 }
 
-class FourPureShiftedPungs extends FourAndAPair {
-  val points = 48
-
-  import Helpers._
-
-  protected def isCompletedBy(hand: Hand) = {
-    val pongs = hand.combinations.filter(_.isPongLike).asInstanceOf[Seq[PongLike]]
-    pongs.size == 4 && isFlush(hand) && isSequential(pongs.flatMap(_.value).sorted)
-  }
-}
-
-class QuadrupleChow extends FourAndAPair {
-  val points = 48
-
-  import Helpers._
-
-  protected def isCompletedBy(hand: Hand) = {
-    val chows = hand.combinations.filter(_.isChow).asInstanceOf[Seq[Chow]]
-    chows.size == 4 && isFlush(hand) && chows.tail.foldLeft((chows.head, true)) { case(tuple, c) =>
-      (c, tuple._2 && tuple._1 == c)
-    }._2
-  }
-}
-
 class AllTerminalAndHonor extends FourAndAPair {
   val points = 32
 
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => t.terminal || t.isDragon || t.isWind)
-}
-
-class ThreeKongs extends FourAndAPair {
-  val points = 32
-
-  protected def isCompletedBy(hand: Hand) = hand.combinations.count(_.isKong) == 4
-}
-
-class FourShiftedChows extends FourAndAPair {
-  val points = 32
-
-  import Helpers._
-
-  protected def isCompletedBy(hand: Hand) = {
-    val chows = hand.combinations.filter(_.isChow).asInstanceOf[Seq[Chow]]
-    val values = chows.flatMap(_.value).sorted
-
-    chows.size == 4 && isFlush(hand) && (isSequential(values) || isSequential(values, interval = 2))
-  }
 }
 
 

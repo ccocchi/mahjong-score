@@ -52,6 +52,7 @@ class Kong(val tiles: Seq[Tile]) extends PongLike {
   override def isKong = true
 }
 
+// TODO: Order the tiles at creation
 class Chow(val tiles: Seq[Tile]) extends Combination {
   val tilesNumber = 3
 

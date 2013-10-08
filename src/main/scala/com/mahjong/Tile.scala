@@ -18,7 +18,9 @@ import Tile.Color._
 sealed abstract class Tile {
   val honor: Boolean
   val terminal: Boolean = false
+
   val value: Option[Int]
+  val suit: Option[Suit]
 
   def ==(other: Suited): Boolean = false
   def ==(other: Wind): Boolean   = false
@@ -31,18 +33,20 @@ sealed abstract class Tile {
 abstract class Honor extends Tile {
   val honor = true
   val value = None
+  val suit  = None
 }
 
 object Suited {
   def apply(suit: Suit, value: Int) = new Suited(suit, value)
 }
 
-class Suited(val suit: Suit, val n: Int) extends Tile {
+class Suited(val s: Suit, val n: Int) extends Tile {
   assert(n > 0 && n < 10)
 
   val honor = false
   override val terminal: Boolean = n == 1 || n == 9
   val value = Some(n)
+  val suit  = Some(s)
 
   override def ==(other: Suited) = this.suit == other.suit && this.n == other.n
 }

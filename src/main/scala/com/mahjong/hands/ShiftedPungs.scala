@@ -47,6 +47,6 @@ abstract class ShiftedPungs(val pungsNumber: Int, val pure: Boolean) extends Sco
   }
 }
 
-class MixedShiftedPungs     extends ShiftedPungs(3, pure = false) with Points8
-class PureShiftedPunds      extends ShiftedPungs(3, pure = true)  with Points24
+class ThreeShiftedPungs     extends ShiftedPungs(3, pure = false) with Points8
+class ThreePureShiftedPungs extends ShiftedPungs(3, pure = true)  with Points24
 class FourPureShiftedPungs  extends ShiftedPungs(4, pure = true)  with Points48
