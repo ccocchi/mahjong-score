@@ -1,7 +1,7 @@
 package com.mahjong.hands
 
-import com.mahjong.{Hand, ScoringHand}
-import com.mahjong.points.{Points16, Points24, Points2, Points6, Points32, Points64}
+import com.mahjong.{Dragon, Suited, Hand, ScoringHand}
+import com.mahjong.points._
 
 class AllHonor extends ScoringHand with Points64 {
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => t.isDragon || t.isWind)
@@ -51,6 +51,26 @@ class AllFive extends ScoringHand with Points16 {
   protected def isCompletedBy(hand: Hand) = hand.combinations.forall { c =>
     c.isChow && c.value == Some(4) || c.value == Some(5) && (c.isPair || c.isPongLike)
   }
+}
+
+class NoHonors extends ScoringHand with Points1 {
+  protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => !(t.isDragon || t.isWind))
+}
+
+class AllGreen extends ScoringHand with Points88 {
+  import com.mahjong.Tile.Suit.Bamboo
+  import com.mahjong.Tile.Color.Green
+
+  private[this] val authorizedTiles = Seq(
+    Suited(Bamboo, 2),
+    Suited(Bamboo, 3),
+    Suited(Bamboo, 4),
+    Suited(Bamboo, 6),
+    Suited(Bamboo, 8),
+    Dragon(Green)
+  )
+
+  protected def isCompletedBy(hand: Hand) = hand.tiles.forall(authorizedTiles contains)
 }
 
 

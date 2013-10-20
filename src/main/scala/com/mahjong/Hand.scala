@@ -11,19 +11,14 @@ class Hand(val combinations: Seq[Combination]) {
 
   def isValid = combinations.map(_.tilesNumber).sum == 14
 
-  def isFlush = {
-    val suits = tiles.flatMap(_.suit)
-    suits.size == tiles.size && suits.distinct.size == 1
-  }
-
   def score: Int = {
-    val scoringHands = ScoringHand.allHands.filter(_.isScoring(this))
+    val scoringHands = ScoringHand.allHands.map { h => (h, h.getPoints(this)) }
 
-    val alreadyIncludedInWinningHand = scoringHands.map(_.includedHands).flatMap {
+    val alreadyIncludedInWinningHand = scoringHands.map(_._1.includedHands).flatMap {
       case None => Seq()
       case Some(sc) => sc
     }.distinct
 
-    scoringHands.diff(alreadyIncludedInWinningHand).map(_.points).sum
+    scoringHands.filterNot { case (h, _) => alreadyIncludedInWinningHand.contains(h.name) }.map(_._2).sum
   }
 }

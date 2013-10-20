@@ -1,11 +1,11 @@
 package com.mahjong.hands
 
-import com.mahjong.{Chow, Hand, FourAndAPair}
+import com.mahjong.{ScoringHand, Chow, Hand}
 import scala.annotation.tailrec
 import com.mahjong.points.{Points6, Points32, Points16}
 import com.mahjong.Tile.Suit
 
-abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends FourAndAPair {
+abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends ScoringHand {
 
   protected def isCompletedBy(hand: Hand): Boolean = {
     if (hand.chows.size >= chowsNumber) {

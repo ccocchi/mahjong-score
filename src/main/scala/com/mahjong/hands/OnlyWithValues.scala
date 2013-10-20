@@ -1,6 +1,6 @@
 package com.mahjong.hands
 
-import com.mahjong.{FourAndAPair, Hand}
+import com.mahjong.{ScoringHand, Hand}
 import com.mahjong.points.{Points12, Points24}
 
 /**
@@ -8,7 +8,7 @@ import com.mahjong.points.{Points12, Points24}
  *
  * @param values values that must contained tiles value
  */
-abstract class OnlyWithValues(values: Seq[Int]) extends FourAndAPair {
+abstract class OnlyWithValues(values: Seq[Int]) extends ScoringHand {
   override def isCompletedBy(hand: Hand) = hand.tiles.flatMap(_.value).forall(values contains)
 }
 

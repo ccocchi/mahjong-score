@@ -6,13 +6,11 @@ abstract class Combination {
   val tilesNumber: Int
   val tiles: Seq[Tile]
 
-  //assert(this.tilesNumber == tiles.size)
-
   protected val hidden: Boolean = true
 
   lazy val value: Option[Int] = tiles.head.value
   lazy val suit: Option[Suit] = tiles.head match {
-    case t: Suited => Some(t.suit)
+    case t: Suited => t.suit
     case _ => None
   }
 
@@ -60,15 +58,6 @@ class Chow(val tiles: Seq[Tile]) extends Combination {
   def getSuit: Suit = suit.get
 
   override def ==(c: Chow) = this.valuesSum == c.valuesSum
-
-  def compareShift(other: Chow, interval: Int = 1): Int = {
-    this.getValue - other.getValue match {
-      case i if i == -interval => -1
-      case i if 1 == interval => 1
-      case 0 => 0
-      case _ => 2
-    }
-  }
 
   protected def valuesSum = tiles.flatMap(_.value).sum
 }
