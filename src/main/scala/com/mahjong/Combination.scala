@@ -6,7 +6,7 @@ abstract class Combination {
   val tilesNumber: Int
   val tiles: Seq[Tile]
 
-  protected val hidden: Boolean = true
+  protected val concealed: Boolean = true
 
   lazy val value: Option[Int] = tiles.head.value
   lazy val suit: Option[Suit] = tiles.head match {
@@ -14,7 +14,7 @@ abstract class Combination {
     case _ => None
   }
 
-  def isHidden: Boolean = hidden
+  def isHidden: Boolean = concealed
   def isPair: Boolean = false
   def isPong: Boolean = false
   def isPongLike: Boolean = false
@@ -50,7 +50,23 @@ class Kong(val tiles: Seq[Tile]) extends PongLike {
   override def isKong = true
 }
 
-// TODO: Order the tiles at creation
+object Chow {
+  def apply(tiles: Seq[Tile]) = {
+    assert(tiles.forall(_.value.isDefined))
+    new Chow(tiles.sortBy(_.value.get))
+  }
+
+  def apply(start: Int, suit: Suit, hidden: Boolean = false) = {
+    val end = start + 2
+    val tiles = start.to(end).map { i =>
+      Suited(suit, i)
+    }
+    new Chow(tiles) {
+      override protected val concealed = hidden
+    }
+  }
+}
+
 class Chow(val tiles: Seq[Tile]) extends Combination {
   val tilesNumber = 3
 

@@ -12,13 +12,14 @@ class Hand(val combinations: Seq[Combination]) {
   def isValid = combinations.map(_.tilesNumber).sum == 14
 
   def score: Int = {
-    val scoringHands = ScoringHand.allHands.map { h => (h, h.getPoints(this)) }
+    val scoringHands = ScoringHand.allHands.map { h => (h, h.getPoints(this)) }.filter(_._2 > 0)
 
-    val alreadyIncludedInWinningHand = scoringHands.map(_._1.includedHands).flatMap {
-      case None => Seq()
-      case Some(sc) => sc
-    }.distinct
+    val alreadyIncludedInWinningHand = scoringHands.flatMap(_._1.includedHands).distinct
 
-    scoringHands.filterNot { case (h, _) => alreadyIncludedInWinningHand.contains(h.name) }.map(_._2).sum
+    val sc = scoringHands.filterNot { case (h, _) => alreadyIncludedInWinningHand.contains(h.name) }
+
+    println(sc.map(_._1.name))
+
+    sc.map(_._2).sum
   }
 }

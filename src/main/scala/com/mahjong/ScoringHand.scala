@@ -101,9 +101,9 @@ object ScoringHand {
 }
 
 abstract class ScoringHand {
-  val name: String = getClass.toString
+  val name: String = getClass.getSimpleName
   val points: Int
-  val includedHands: Option[Seq[String]] = None
+  val includedHands: Seq[String] = Seq.empty
 
   def getPoints(hand: Hand): Int = if (isCompletedBy(hand)) points else 0
   protected def isCompletedBy(hand: Hand): Boolean

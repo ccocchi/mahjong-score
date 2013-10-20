@@ -9,7 +9,7 @@ abstract class MultipleChows(val count: Int, val pure: Boolean) extends ScoringH
       hand.chows.groupBy(_.getValue).exists { case(_, chows) =>
         val suits = chows.flatMap(_.suit).distinct
 
-        chows.size == count && (pure && suits.size == count || !pure && suits.size == count)
+        chows.size == count && (pure && suits.size == 1 || !pure && suits.size == count)
       }
     } else
       false

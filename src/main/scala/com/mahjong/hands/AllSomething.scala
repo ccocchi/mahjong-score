@@ -24,6 +24,8 @@ class AllRevealed extends ScoringHand with Points6 {
 }
 
 class AllChow extends ScoringHand with Points2 {
+  override val includedHands = Seq("NoHonors")
+
   protected def isCompletedBy(hand: Hand) = hand.chows.size == 4
 }
 
@@ -44,7 +46,7 @@ class AllType extends ScoringHand with Points6 {
 }
 
 class AllSimples extends ScoringHand with Points2 {
-  protected def isCompletedBy(hand: Hand) = hand.tiles.flatMap(_.value).filter(v => v > 1 && v < 9) == 14
+  protected def isCompletedBy(hand: Hand) = hand.tiles.flatMap(_.value).count(v => v > 1 && v < 9) == 14
 }
 
 class AllFive extends ScoringHand with Points16 {
@@ -54,6 +56,8 @@ class AllFive extends ScoringHand with Points16 {
 }
 
 class NoHonors extends ScoringHand with Points1 {
+  override val name = "NoHonors"
+
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => !(t.isDragon || t.isWind))
 }
 
