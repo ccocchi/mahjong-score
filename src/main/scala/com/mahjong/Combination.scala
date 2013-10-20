@@ -56,7 +56,8 @@ class Kong(val tiles: Seq[Tile]) extends PongLike {
 class Chow(val tiles: Seq[Tile]) extends Combination {
   val tilesNumber = 3
 
-  val getValue: Int = value.get
+  def getValue: Int = value.get
+  def getSuit: Suit = suit.get
 
   override def ==(c: Chow) = this.valuesSum == c.valuesSum
 

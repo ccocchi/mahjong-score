@@ -57,9 +57,9 @@ object ScoringHand {
     new AllTerminals,
     new LittleFourWinds,
     new LittleThreeDragons,
-    // new AllHonor,
+    new AllHonor,
     new FourConcealedPungs,
-    // new TwoDragonInFamily
+    new TwoDragonsInAFamily,
 
     // 48
     new QuadrupleChows,
@@ -73,8 +73,8 @@ object ScoringHand {
     // 24
     // new SevenPairs,
     // new KnittedTiles,
-    // new AllEvenPungs,
-    // new PureHand,
+    new AllEvenPung,
+    new PureHand,
     new TriplePureChows,
     new ThreePureShiftedPungs,
     new LowerTiles,
@@ -83,9 +83,9 @@ object ScoringHand {
 
     // 16
     new PureBigStraight,
-    // new TwoDragonsInTwoFamily,
+    new TwoDragonsInThreeFamilies,
     new ThreePureShiftedChows,
-    // new AllFive,
+    new AllFive,
     new TriplePung,
     new ThreeConcealedPungs,
 
@@ -98,18 +98,17 @@ object ScoringHand {
 
     // 8
     new BigStraight,
-    // new Symetry,
+    new Symmetry,
     new TripleChows,
     new ThreeShiftedPungs,
     // new ValueLessHand,
 
-
     // 6
-    // new AllPung,
-    // new HalfPure,
+    new AllPung,
+    new HalfPureHand,
     new ThreeShiftedChows,
-    // new AllType,
-    // new AllConcealed,
+    new AllType,
+    new AllRevealed,
     new TwoDragonPungs,
 
     // 4
@@ -118,19 +117,19 @@ object ScoringHand {
 
     // 2
     new DragonPung,
-    // new AllConcealed,
-    // new AllChow,
+    new AllConcealed,
+    new AllChow,
     // new FourOfTheSame,
     new DoublePung,
-    // new TwoConcealedPungs,
+    new TwoConcealedPungs,
     // new ConcealedKong,
-    // new AllSimples,
+    new AllSimples,
 
     // 1
     new PureDoubleChow,
     new MixedDoubleChow,
     new PureLittleStraight,
-    // new OneDragonInOneFamily
+    new OneDragonInAFamily,
     // new TerminalOrHonorPung,
     // new ExposedKong,
     // new MissingFamily,
@@ -211,17 +210,7 @@ class FourHiddenPungs extends FourAndAPair {
   protected def isCompletedBy(hand: Hand) = hand.combinations.count(c => c.isPong && c.isHidden) == 4
 }
 
-class AllTerminals extends FourAndAPair {
-  val points = 64
 
-  protected def isCompletedBy(hand: Hand) = hand.tiles.forall(_.terminal)
-}
-
-class AllTerminalAndHonor extends FourAndAPair {
-  val points = 32
-
-  protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => t.terminal || t.isDragon || t.isWind)
-}
 
 
 
