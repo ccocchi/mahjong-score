@@ -1,5 +1,9 @@
 package com.mahjong
 
+object Hand {
+  def apply(str: String): Hand = null
+}
+
 class Hand(val combinations: Seq[Combination]) {
   val tiles: Seq[Tile] = combinations.flatMap(_.tiles)
 
@@ -18,7 +22,8 @@ class Hand(val combinations: Seq[Combination]) {
 
     val sc = scoringHands.filterNot { case (h, _) => alreadyIncludedInWinningHand.contains(h.name) }
 
-    println(sc.map(_._1.name))
+    println("Scoring hands:")
+    sc.foreach(h => println("  - " + h._1.name + " (%d)".format(h._2)))
 
     sc.map(_._2).sum
   }

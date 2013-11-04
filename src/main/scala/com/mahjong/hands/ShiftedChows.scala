@@ -22,7 +22,7 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Sco
 
   private def findShiftedChows(combinations: Seq[Chow]): Option[Seq[Chow]] = {
 
-    def innerS(seq: Seq[Chow]) = inner(seq.head, seq.tail, Seq.empty)
+    def innerS(seq: Seq[Chow]) = inner(seq.head, seq.tail.toList, Seq.empty)
 
     def maybeResult[T](seq: Seq[T]) = if (seq.isEmpty) None else Some(seq)
 
@@ -39,7 +39,7 @@ abstract class ShiftedChows(val chowsNumber: Int, val pure: Boolean) extends Sco
 
     val sortedCombinations = combinations.sortBy(_.getValue)
     innerS(sortedCombinations) match {
-      case None => innerS(sortedCombinations.tail)
+      case None => innerS(sortedCombinations.tail.toList)
       case s => s
      }
   }

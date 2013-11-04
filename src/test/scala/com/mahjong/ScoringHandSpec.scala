@@ -7,6 +7,10 @@ class ScoringHandSpec extends FunSpec with ShouldMatchers {
   import Tile.Suit._
   import Tile.Color._
 
+  it("should refuse hand with not enough tiles")
+
+  it("should reject invalid hands")
+
   it("should found the right score") {
     val combinations = Seq(
       Chow(1, Bamboo, hidden = true),
@@ -55,5 +59,18 @@ class ScoringHandSpec extends FunSpec with ShouldMatchers {
 
     val hand = new Hand(combinations)
     hand.score should equal(16) // should be 18 with AllConcealedAndDraw
+  }
+
+  it("should do oher things") {
+    val combinations = Seq(
+      Chow(7, Bamboo),
+      Chow(4, Character),
+      PongFactory.ofWind(Wind.Direction.South),
+      Chow(1, Dot, hidden = true),
+      PairFactory.ofSuited(1, Dot)
+    )
+
+    val hand = new Hand(combinations)
+    hand.score should equal(9) // should be 10 with dominant wind
   }
 }

@@ -8,8 +8,11 @@ import com.mahjong.points.{Points12, Points24}
  *
  * @param values values that must contained tiles value
  */
-abstract class OnlyWithValues(values: Seq[Int]) extends ScoringHand {
-  override def isCompletedBy(hand: Hand) = hand.tiles.flatMap(_.value).forall(values contains)
+abstract class OnlyWithValues(val values: Seq[Int]) extends ScoringHand {
+  override def isCompletedBy(hand: Hand) = {
+    val tileValues = hand.tiles.flatMap(_.value)
+    tileValues.size == 14 && tileValues.forall(values contains)
+  }
 }
 
 class LowerTiles  extends OnlyWithValues(Seq(1, 2, 3)) with Points24

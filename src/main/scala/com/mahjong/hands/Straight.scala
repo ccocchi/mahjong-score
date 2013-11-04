@@ -5,7 +5,7 @@ import com.mahjong.points.{Points16, Points8, Points1}
 import scala.annotation.tailrec
 
 abstract class Straight(val count: Int, pure: Boolean) extends ScoringHand {
-  protected def isCompletedBy(hand: Hand) = {
+  protected def isCompletedBy(hand: Hand): Boolean = {
     if (hand.chows.size >= count)
       count match {
         case 2 => findStraight(hand.chows).size == count || findStraight(hand.chows.drop(2)).size == count
@@ -34,10 +34,13 @@ abstract class Straight(val count: Int, pure: Boolean) extends ScoringHand {
     val list = chows.tail
 
     val result = inner(list, Seq(chows.head))
-    result.size match {
-      case 1 => inner(list.tail, Seq(list.head))
-      case _ => result
-    }
+    if (result.size == 1) {
+      list match {
+        case Nil => result
+        case _ => inner(list.tail, Seq(list.head))
+      }
+    } else
+      result
   }
 }
 

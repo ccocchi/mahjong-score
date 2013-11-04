@@ -57,7 +57,20 @@ object Wind {
     val North, South, East, West = Value
   }
 
-  def apply(direction: Direction.Direction) = new Wind(direction)
+  import Wind.Direction.Direction
+
+  def apply(direction: Direction): Wind = new Wind(direction)
+
+  def apply(str: Char): Wind = {
+    val direction = str match {
+      case 'o' => Direction.West
+      case 'e' => Direction.East
+      case 's' => Direction.South
+      case 'n' => Direction.North
+    }
+
+    apply(direction)
+  }
 }
 
 import Wind.Direction.Direction
@@ -68,7 +81,17 @@ class Wind(val direction: Direction) extends Honor {
 }
 
 object Dragon {
-  def apply(color: Color) = new Dragon(color)
+  def apply(str: Char): Dragon = {
+    val color = str match {
+      case 'b' => White
+      case 'r' => Red
+      case 'v' => Green
+      case _ => throw new Exception()
+    }
+    apply(color)
+  }
+
+  def apply(color: Color): Dragon = new Dragon(color)
 }
 
 class Dragon(val color: Color) extends Honor {

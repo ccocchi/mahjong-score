@@ -1,6 +1,6 @@
 package com.mahjong
 
-import com.mahjong.Tile.Suit.Suit
+import com.mahjong.Tile.Suit._
 
 abstract class Combination {
   val tilesNumber: Int
@@ -29,6 +29,15 @@ class SingleTile(val tile: Tile) extends Combination {
   val tiles = Seq(tile)
 }
 
+object Pair {
+  def apply(tile: Tile, hidden: Boolean): Pair = {
+    val tiles = Seq.fill(2)(tile)
+    new Pair(tiles) {
+      override protected val concealed = hidden
+    }
+  }
+}
+
 class Pair(val tiles: Seq[Tile]) extends Combination {
   val tilesNumber = 2
 
@@ -38,12 +47,30 @@ class Pair(val tiles: Seq[Tile]) extends Combination {
 abstract class PongLike extends Combination {
   val tilesNumber = 3
 
-  val getValue: Int = value.get
+  val getValue: Int = value.getOrElse(0)
   override def isPongLike = true
+}
+
+object Pong {
+  def apply(tile: Tile, hidden: Boolean = false) = {
+    val tiles = Seq.fill(3)(tile)
+    new Pong(tiles) {
+      override protected val concealed = hidden
+    }
+  }
 }
 
 class Pong(val tiles: Seq[Tile]) extends PongLike {
   override def isPong = true
+}
+
+object Kong {
+  def apply(tile: Tile, hidden: Boolean = false) = {
+    val tiles = Seq.fill(4)(tile)
+    new Kong(tiles) {
+      override protected val concealed = hidden
+    }
+  }
 }
 
 class Kong(val tiles: Seq[Tile]) extends PongLike {
@@ -54,6 +81,10 @@ object Chow {
   def apply(tiles: Seq[Tile]) = {
     assert(tiles.forall(_.value.isDefined))
     new Chow(tiles.sortBy(_.value.get))
+  }
+
+  def apply(tile: Tile, hidden: Boolean): Chow = {
+    apply(tile.value.get, tile.suit.get, hidden)
   }
 
   def apply(start: Int, suit: Suit, hidden: Boolean = false) = {

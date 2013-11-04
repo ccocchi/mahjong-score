@@ -35,8 +35,10 @@ class OneMissingFamily extends ScoringHand with Points1 {
 }
 
 class TerminalOrWindPung extends ScoringHand with Points1 {
-  protected def isCompletedBy(hand: Hand) =
-    hand.pongLikes.exists(p => p.getValue == 1 || p.getValue == 9 || p.tiles.exists(_.isWind))
+  override def getPoints(hand: Hand) =
+    hand.pongLikes.count(p => p.getValue == 1 || p.getValue == 9 || p.tiles.exists(_.isWind))
+
+  protected def isCompletedBy(hand: Hand) = true
 }
 
 class FourOfTheSame extends ScoringHand with Points2 {
