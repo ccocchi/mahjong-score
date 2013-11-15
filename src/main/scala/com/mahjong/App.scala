@@ -1,6 +1,14 @@
 package com.mahjong
 
-import com.twitter.finatra.{Controller, FinatraServer}
+import com.twitter.finatra.{FileService, AppService, Config, Controller, FinatraServer}
+import com.twitter.finagle.tracing.{NullTracer, Tracer}
+import com.twitter.ostrich.admin.{ServiceTracker, RuntimeEnvironment}
+import com.twitter.finagle.Service
+import com.twitter.finagle.http.{RichHttp, Http, Response, Request}
+import com.twitter.finagle.builder.ServerBuilder
+import com.twitter.conversions.storage._
+import java.net.InetSocketAddress
+import scala.util.Properties
 
 object App {
   def main(args: Array[String]) = {
@@ -37,4 +45,39 @@ class MahjongController extends Controller {
 
 class App extends FinatraServer {
   register(new MahjongController)
+
+  override def start(
+             tracer:     Tracer              = NullTracer,
+             runtimeEnv: RuntimeEnvironment  = new RuntimeEnvironment(this)) {
+
+    ServiceTracker.register(this)
+
+    initLogger()
+
+    val appService  = new AppService(controllers)
+    val fileService = new FileService
+
+    addFilter(fileService)
+
+    val port = Properties.envOrElse("PORT", Config.get("port")).toInt
+    val service: Service[Request, Response] = allFilters(appService)
+    val http = Http().maxRequestSize(Config.getInt("max_request_megabytes").megabyte)
+
+    val codec = new RichHttp[Request](http)
+
+    val server = ServerBuilder()
+      .codec(codec)
+      .bindTo(new InetSocketAddress(port))
+      .tracer(tracer)
+      .name(Config.get("name"))
+      .build(service)
+
+    logger.info("process %s started on %s", pid, port)
+
+    println("finatra process " + pid + " started on port: " + port.toString)
+    println("config args:")
+    Config.printConfig()
+
+  }
+
 }
