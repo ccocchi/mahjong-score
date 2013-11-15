@@ -7,9 +7,9 @@ class ScoringHandSpec extends FunSpec with ShouldMatchers {
   import Tile.Suit._
   import Tile.Color._
 
-  it("should refuse hand with not enough tiles")
+  it("should refuse hand with not enough tiles") {}
 
-  it("should reject invalid hands")
+  it("should reject invalid hands") {}
 
   it("should found the right score") {
     val combinations = Seq(

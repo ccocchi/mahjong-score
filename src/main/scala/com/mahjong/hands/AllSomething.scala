@@ -56,8 +56,6 @@ class AllFive extends ScoringHand with Points16 {
 }
 
 class NoHonors extends ScoringHand with Points1 {
-  override val name = "NoHonors"
-
   protected def isCompletedBy(hand: Hand) = hand.tiles.forall(t => !(t.isDragon || t.isWind))
 }
 
